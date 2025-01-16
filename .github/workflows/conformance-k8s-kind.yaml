@@ -11,13 +11,11 @@ env:
   CONFORMANCE_TEMPLATE: examples/kubernetes/connectivity-check/connectivity-check.yaml
   TIMEOUT: 2m
   LOG_TIME: 30m
-
+  cluster_name: cilium-testing
+  
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}
   cancel-in-progress: true
-
-env:
-  cluster_name: cilium-testing
 
 jobs:
   kubernetes-e2e:

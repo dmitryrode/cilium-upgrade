@@ -1,4 +1,4 @@
-name: Conformance K8s Kind
+name: K8s tests
 
 # Any change in triggers needs to be reflected in the concurrency group.
 on:
@@ -8,9 +8,6 @@ permissions: read-all
 
 env:
   KIND_CONFIG: .github/kind-config.yaml
-  CONFORMANCE_TEMPLATE: examples/kubernetes/connectivity-check/connectivity-check.yaml
-  TIMEOUT: 2m
-  LOG_TIME: 30m
   cluster_name: cilium-testing
 
 concurrency:
@@ -20,15 +17,12 @@ concurrency:
 jobs:
   kubernetes-e2e:
     name: Installation and Conformance Test
-    runs-on: ${{ vars.GH_RUNNER_EXTRA_POWER_UBUNTU_LATEST || 'ubuntu-24.04' }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
-      matrix:
-        # TODO add "dual" and "ipv6", "ipv6" fails to install cilium
-        ipFamily: ["ipv4"]
     env:
-      IP_FAMILY: ${{ matrix.ipFamily }}
+      IP_FAMILY: ipv4
       job_name: "Installation and Conformance Test"
 
     steps:

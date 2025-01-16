@@ -93,11 +93,14 @@ jobs:
           echo cilium_install_defaults=${CILIUM_INSTALL_DEFAULTS} >> $GITHUB_OUTPUT
 
       - name: Install Cilium CLI
-        uses: cilium/cilium-cli@f313219850d324b516748ff7b00a6f9fa30d34ae # v0.16.23
-        with:
-          skip-build: ${{ env.CILIUM_CLI_SKIP_BUILD }}
-          image-repo: ${{ env.CILIUM_CLI_RELEASE_REPO }}
-          image-tag: latest
+        run: |
+        CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+        GOOS=$(go env GOOS)
+        GOARCH=$(go env GOARCH)
+        curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
+        sha256sum --check cilium-${GOOS}-${GOARCH}.tar.gz.sha256sum
+        sudo tar -C /usr/local/bin -xzvf cilium-${GOOS}-${GOARCH}.tar.gz
+        rm cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
 
       - name: Wait for images to be available
         timeout-minutes: 30

@@ -209,16 +209,16 @@ jobs:
         with:
           junit-directory: "_artifacts"
 
-          - name: Upload JUnits [junit]
-          if: ${{ always() }}
-          uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
-          with:
-            name: cilium-junits
-            path: cilium-junits/*.xml
-            retention-days: 2
+      - name: Upload JUnits [junit]
+        if: ${{ always() }}
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        with:
+          name: cilium-junits
+          path: cilium-junits/*.xml
+          retention-days: 2
   
-        - name: Publish Test Results As GitHub Summary
-          if: ${{ always() }}
-          uses: aanm/junit2md@332ebf0fddd34e91b03a832cfafaa826306558f9 # v0.0.3
-          with:
-            junit-directory: "cilium-junits"
+      - name: Publish Test Results As GitHub Summary
+        if: ${{ always() }}
+        uses: aanm/junit2md@332ebf0fddd34e91b03a832cfafaa826306558f9 # v0.0.3
+        with:
+          junit-directory: "cilium-junits"

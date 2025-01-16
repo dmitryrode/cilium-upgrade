@@ -102,18 +102,15 @@ jobs:
           sudo tar -C /usr/local/bin -xzvf cilium-${GOOS}-${GOARCH}.tar.gz
           rm cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
 
-      - name: Wait for images to be available
-        timeout-minutes: 30
-        shell: bash
-        run: |
-          for image in cilium operator-generic hubble-relay; do
-            until docker manifest inspect quay.io/cilium/$image:latest &> /dev/null; do sleep 45s; done
-          done
-
       - name: Install Cilium
         id: install-cilium
         run: |
           cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }}
+
+      - name: Cilium Status
+        id: install-cilium
+        run: |
+          cilium status
 
       # - name: Run Kubernetes sig-network conformance test
       #   run: |

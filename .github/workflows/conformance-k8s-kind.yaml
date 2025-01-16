@@ -107,9 +107,10 @@ jobs:
         run: |
           cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }}
 
-      - name: Cilium Status
+      - name: Wait for Cilium to be ready
         run: |
-          cilium status
+          cilium status --wait --wait-duration=10m
+          kubectl get pods -n kube-system
 
       # - name: Run Kubernetes sig-network conformance test
       #   run: |

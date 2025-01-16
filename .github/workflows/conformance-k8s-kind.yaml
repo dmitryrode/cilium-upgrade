@@ -108,7 +108,6 @@ jobs:
           cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }}
 
       - name: Cilium Status
-        id: install-cilium
         run: |
           cilium status
 

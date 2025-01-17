@@ -9,6 +9,7 @@ permissions: read-all
 env:
   KIND_CONFIG: .github/kind-config.yaml
   cluster_name: cilium-testing
+  CILIUM_VERSION: 1.13.8
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}
@@ -105,7 +106,7 @@ jobs:
       - name: Install Cilium
         id: install-cilium
         run: |
-          cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }}
+          cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }} --version ${{ CILIUM_VERSION }}
 
       - name: Wait for Cilium to be ready
         run: |

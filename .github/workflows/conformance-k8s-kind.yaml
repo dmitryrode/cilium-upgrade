@@ -9,6 +9,8 @@ permissions: read-all
 env:
   KIND_CONFIG: .github/kind-config.yaml
   cluster_name: cilium-testing
+  CILIUM_VERSION: 1.16.0
+  CILIUM_UPGRADE_VERSION: 1.16.5
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}
@@ -105,7 +107,7 @@ jobs:
       - name: Install Cilium
         id: install-cilium
         run: |
-          cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }}
+          cilium install --wait ${{ steps.vars.outputs.cilium_install_defaults }} --version ${{ env.CILIUM_VERSION }}
 
       - name: Wait for Cilium to be ready
         run: |
@@ -116,11 +118,11 @@ jobs:
         run: |
           mkdir -p cilium-junits
 
-      - name: Run connectivity test
+      - name: Run connectivity test before upgrade
         run: |
           cilium connectivity test ${{ steps.vars.outputs.connectivity_test_defaults }} \
             --curl-parallel 3 \
-            --junit-file "cilium-junits/${{ env.job_name }}.xml" --junit-property github_job_step="Run connectivity test"
+            --junit-file "cilium-junits/${{ env.job_name }}.xml" --junit-property github_job_step="Run connectivity test before"
 
       - name: Post-test information gathering
         if: ${{ !success() && steps.install-cilium.outcome != 'skipped' }}
@@ -130,6 +132,24 @@ jobs:
           cilium sysdump --output-filename cilium-sysdump-final
           /usr/local/bin/kind export logs --name  ${{ env.cluster_name }} --verbosity=3 ./_artifacts/logs
         shell: bash {0} # Disable default fail-fast behaviour so that all commands run independently
+
+      - name: Upgrade Cilium
+        if: ${{ matrix.skip-upgrade != 'true' }}
+        shell: bash
+        run: |
+          cilium upgrade \
+            --helm-set=disableEnvoyVersionCheck=true \
+            --version=${{ env.CILIUM_UPGRADE_VERSION }}
+
+          cilium status --wait --wait-duration=10m
+          kubectl get pods --all-namespaces -o wide
+          kubectl -n kube-system exec daemonset/cilium -- cilium status
+
+      - name: Run connectivity test after upgrade
+        run: |
+          cilium connectivity test ${{ steps.vars.outputs.connectivity_test_defaults }} \
+            --curl-parallel 3 \
+            --junit-file "cilium-junits/${{ env.job_name }}.xml" --junit-property github_job_step="Run connectivity test after"
 
       - name: Upload artifacts
         if: ${{ !success() }}

@@ -9,7 +9,7 @@ permissions: read-all
 env:
   KIND_CONFIG: .github/kind-config.yaml
   cluster_name: cilium-testing
-  CILIUM_VERSION: 1.15.0
+  CILIUM_VERSION: 1.16.0
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}

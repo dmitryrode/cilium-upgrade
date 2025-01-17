@@ -89,7 +89,7 @@ jobs:
           # Note: On Kind, we install Cilium with HostPort (portmap CNI chaining) enabled,
           # to ensure coverage of that feature in cilium connectivity test
           CILIUM_INSTALL_DEFAULTS="--helm-set=cni.chainingMode=portmap \
-            --helm-set-string=kubeProxyReplacement=disabled"
+            --helm-set-string=kubeProxyReplacement=true"
 
           echo cilium_install_defaults=${CILIUM_INSTALL_DEFAULTS} >> $GITHUB_OUTPUT
 

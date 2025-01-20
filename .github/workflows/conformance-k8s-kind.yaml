@@ -113,6 +113,7 @@ jobs:
         run: |
           cilium status --wait --wait-duration=10m
           kubectl get pods -n kube-system
+          kubectl -n kube-system exec daemonset/cilium -- cilium status
 
       - name: Make JUnit report directory
         run: |

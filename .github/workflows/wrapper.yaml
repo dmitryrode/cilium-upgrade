@@ -7,13 +7,8 @@ on:
         description: 'Base64 results'
         type: string
         required: true
-        
+
 permissions: read-all
-  
-  jobs:
-    log-the-inputs:
-      runs-on: ubuntu-latest
-      steps:
 
 jobs:
   cilium-tests:

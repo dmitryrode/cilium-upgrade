@@ -7,6 +7,7 @@ on:
         description: 'Base64 results'
         type: string
         required: true
+        
 permissions: read-all
   
   jobs:

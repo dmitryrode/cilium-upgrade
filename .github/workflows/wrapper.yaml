@@ -28,6 +28,7 @@ jobs:
       - run: |
           echo $ENVIRONMENT
           echo $ENVIRONMENT | base64 -d > cilium-junits/test.xml
+          cat cilium-junits/test.xml
         env:
           ENVIRONMENT: ${{ inputs.test_results }}
 

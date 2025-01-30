@@ -2,16 +2,13 @@ name: Cilium Test Results
 
 on:
   workflow_dispatch:
-
+    inputs:
+      test_results:
+        description: 'Base64 results'
+        type: string
+        required: true
+        
 permissions: read-all
-
-on:
-    workflow_dispatch:
-      inputs:
-        test_results:
-          description: 'Base64 results'
-          type: string
-          required: true
   
   jobs:
     log-the-inputs:
